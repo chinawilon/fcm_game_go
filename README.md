@@ -2,7 +2,7 @@
 
 # Install
 ```shell script
-go get chinawilon/fcm_game_go
+go get github.com/chinawilon/fcm_game_go
 ```
 
 # Example
