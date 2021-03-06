@@ -110,7 +110,7 @@ func (f *fcm) makeSign(header http.Header, body string, query map[string]string)
 	ks := f.keys
 	for k, v := range query {
 		ks = append(ks, k)
-		header.Add(k, v)
+		header[k] = []string{v} //maybe lower case
 	}
 	sort.Strings(ks)
 	raw := ""
