@@ -89,7 +89,7 @@ func (f *fcm) TestLoginOrOut(q *[]Behavior, testCode string) (*http.Response, er
 	uri := "https://wlc.nppa.gov.cn/test/collection/loginout/" + testCode
 	header := f.getHeader()
 	header["Content-Type"] = []string{"application/json; charset=utf-8"}
-	return f.request("GET", uri, q, header)
+	return f.request("POST", uri, q, header)
 }
 
 // aes-128-gcm + base64
