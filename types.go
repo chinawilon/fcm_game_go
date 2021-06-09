@@ -7,18 +7,18 @@ import (
 
 // fcm
 type fcm struct {
-	AppID string
-	BizID string
-	Key string
-	aes cipher.AEAD
-	keys []string
+	AppID  string
+	BizID  string
+	Key    string
+	aes    cipher.AEAD
+	keys   []string
 	client http.Client
 }
 
 // check data
 type Check struct {
-	Ai string `json:"ai"`
-	Name string `json:"name"`
+	Ai    string `json:"ai"`
+	Name  string `json:"name"`
 	IdNum string `json:"idNum"`
 }
 
@@ -29,17 +29,22 @@ type Query struct {
 
 // login or logout
 type Behavior struct {
-	No int `json:"no"`
+	No int    `json:"no"`
 	Si string `json:"si"`
-	Bt int `json:"bt"`
-	Ot int64 `json:"ot"`
-	Ct int `json:"ct"`
+	Bt int    `json:"bt"`
+	Ot int64  `json:"ot"`
+	Ct int    `json:"ct"`
 	Di string `json:"di"`
 	Pi string `json:"pi"`
 }
 
+// Collections behaviors
+type Collections struct {
+	Collections *[]Behavior `json:"collections"`
+}
+
 // response status
 type Status struct {
-	ErrCode int `json:"errcode"`
-	ErrMsg string `json:"errmsg"`
+	ErrCode int    `json:"errcode"`
+	ErrMsg  string `json:"errmsg"`
 }
