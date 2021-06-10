@@ -1,6 +1,8 @@
 package fcm
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -9,7 +11,7 @@ import (
 	"time"
 )
 
-func TestCheck(t *testing.T)  {
+func TestCheck(t *testing.T) {
 	// Preset parameters
 	fcm, err := NewFcm("e44158030c7341819aedf04a147f3e8a", "1101999999", "d59bbdefd68b71f906c4d67e52841700")
 	if err != nil {
@@ -21,7 +23,7 @@ func TestCheck(t *testing.T)  {
 	fcm.SetClient(
 		&http.Transport{
 			Proxy: http.ProxyURL(proxy),
-		}, time.Second * 10)
+		}, time.Second*10)
 
 	// test check
 	response, err := fcm.TestCheck(
@@ -55,7 +57,7 @@ func TestCheck(t *testing.T)  {
 	}
 }
 
-func TestQuery(t *testing.T)  {
+func TestQuery(t *testing.T) {
 	// Preset parameters
 	fcm, err := NewFcm("e44158030c7341819aedf04a147f3e8a", "1101999999", "d59bbdefd68b71f906c4d67e52841700")
 	if err != nil {
@@ -67,7 +69,7 @@ func TestQuery(t *testing.T)  {
 	fcm.SetClient(
 		&http.Transport{
 			Proxy: http.ProxyURL(proxy),
-		}, time.Second * 10)
+		}, time.Second*10)
 
 	// check
 	response, err := fcm.TestQuery(
@@ -101,8 +103,7 @@ func TestQuery(t *testing.T)  {
 	}
 }
 
-
-func TestLoginOrOut(t *testing.T)  {
+func TestLoginOrOut(t *testing.T) {
 	// Preset parameters
 	fcm, err := NewFcm("e44158030c7341819aedf04a147f3e8a", "1101999999", "d59bbdefd68b71f906c4d67e52841700")
 	if err != nil {
@@ -114,11 +115,32 @@ func TestLoginOrOut(t *testing.T)  {
 	fcm.SetClient(
 		&http.Transport{
 			Proxy: http.ProxyURL(proxy),
-		}, time.Second * 10)
+		}, time.Second*10)
 
-	// check
-	response, err := fcm.TestLoginOrOut(
-		&[]Behavior{{No: 1, Bt: 0, Ct: 2, Di: "fjfkfjfkfjfkfjfkfjfkfjjjjjjsjjss"}}, "HHatGD")
+	// upload collection
+	// 游客用户
+	di := makeMD5("device")
+	behavior := Behavior{
+		No: 1,
+		Si: di,
+		Bt: 1,
+		Ot: time.Now().Unix(),
+		Ct: 2,
+		Di: di,
+		Pi: "",
+	}
+	//// 已认证通过用户
+	//pi := "1fffbjzos82bs9cnyj1dna7d6d29zg4esnh99u"
+	//behavior := Behavior{
+	//	No: 2,
+	//	Si: pi,
+	//	Bt: 1,
+	//	Ot: time.Now().Unix(),
+	//	Ct: 0,
+	//	Pi: pi,
+	//}
+	collections := &Collections{Collections: &[]Behavior{behavior}}
+	response, err := fcm.TestLoginOrOut(collections, "HHatGD")
 
 	if err != nil {
 		t.Errorf("fcm check err : %v", err)
@@ -146,4 +168,11 @@ func TestLoginOrOut(t *testing.T)  {
 	if info.ErrCode != 0 {
 		t.Errorf("response err : %v", info)
 	}
+}
+
+func makeMD5(str string) string {
+	ctx := md5.New()
+	ctx.Write([]byte(str))
+	s := ctx.Sum(nil)
+	return hex.EncodeToString(s)
 }
